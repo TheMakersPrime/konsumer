@@ -1,0 +1,15 @@
+name: konsumer
+description: "A Riverpod consumer for easier provider consumption"
+version: 0.0.1
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^7.0.0
