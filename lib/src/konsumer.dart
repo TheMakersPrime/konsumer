@@ -4,13 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:konsumer/src/base/konsumer_state.dart';
 import 'package:konsumer/src/base/konsumer_view_model.dart';
-import 'package:konsumer/src/konsumer_pod.dart';
 import 'package:konsumer_core/konsumer_core.dart';
 import 'package:statetris/statetris.dart';
-
-typedef KBuilder<VM, S> = Widget Function(BuildContext, KonsumerPod<VM, S>);
-typedef KListen<VM, S> = void Function(BuildContext, KonsumerPod<VM, S>);
-typedef KOnReady<VM> = void Function(VM);
 
 class Konsumer<VM extends KonsumerViewModel<S>, S extends KonsumerState> extends StatelessWidget {
   const Konsumer({
@@ -28,24 +23,23 @@ class Konsumer<VM extends KonsumerViewModel<S>, S extends KonsumerState> extends
 
   final AutoDisposeNotifierProvider<VM, S> provider;
 
-  final KBuilder<VM, S> builder;
-  final KBuilder<VM, S>? onActionBuilder;
-  final KBuilder<VM, S>? onLoadingBuilder;
-  final KBuilder<VM, S>? onErrorBuilder;
-  final KBuilder<VM, S>? loadingAssetBuilder;
-  final KBuilder<VM, S>? errorAssetBuilder;
+  final KonsumerBuilder<VM, S> builder;
+  final KonsumerBuilder<VM, S>? onActionBuilder;
+  final KonsumerBuilder<VM, S>? onLoadingBuilder;
+  final KonsumerBuilder<VM, S>? onErrorBuilder;
+  final KonsumerBuilder<VM, S>? loadingAssetBuilder;
+  final KonsumerBuilder<VM, S>? errorAssetBuilder;
 
-  final KListen<VM, S>? listen;
-  final KOnReady<VM>? onReady;
+  final KonsumerListen<VM, S>? listen;
+  final KonsumerOnReady<VM>? onReady;
 
   @override
   Widget build(BuildContext context) {
     return KonsumerCore(
       provider: provider,
-      builder: (context, vm, state, ref) {
-        final pod = KonsumerPod(vm, state, ref);
+      builder: (context, pod) {
         return _Konsumer(
-          state: state,
+          state: pod.state,
           builder: (context) => builder(context, pod),
           onActionBuilder: onActionBuilder == null ? null : (context) => onActionBuilder!(context, pod),
           onLoadingBuilder: onLoadingBuilder == null ? null : (context) => onLoadingBuilder!(context, pod),
@@ -55,10 +49,7 @@ class Konsumer<VM extends KonsumerViewModel<S>, S extends KonsumerState> extends
         );
       },
       onReady: onReady,
-      listen: (context, notifier, state, ref) => listen?.call(
-        context,
-        KonsumerPod(notifier, state, ref),
-      ),
+      listen: listen,
     );
   }
 }
@@ -79,24 +70,23 @@ class StickyKonsumer<VM extends StickyKonsumerViewModel<S>, S extends KonsumerSt
 
   final NotifierProvider<VM, S> provider;
 
-  final KBuilder<VM, S> builder;
-  final KBuilder<VM, S>? onActionBuilder;
-  final KBuilder<VM, S>? onLoadingBuilder;
-  final KBuilder<VM, S>? onErrorBuilder;
-  final KBuilder<VM, S>? loadingAssetBuilder;
-  final KBuilder<VM, S>? errorAssetBuilder;
+  final KonsumerBuilder<VM, S> builder;
+  final KonsumerBuilder<VM, S>? onActionBuilder;
+  final KonsumerBuilder<VM, S>? onLoadingBuilder;
+  final KonsumerBuilder<VM, S>? onErrorBuilder;
+  final KonsumerBuilder<VM, S>? loadingAssetBuilder;
+  final KonsumerBuilder<VM, S>? errorAssetBuilder;
 
-  final KListen<VM, S>? listen;
-  final KOnReady<VM>? onReady;
+  final KonsumerListen<VM, S>? listen;
+  final KonsumerOnReady<VM>? onReady;
 
   @override
   Widget build(BuildContext context) {
     return StickyKonsumerCore(
       provider: provider,
-      builder: (context, vm, state, ref) {
-        final pod = KonsumerPod(vm, state, ref);
+      builder: (context, pod) {
         return _Konsumer(
-          state: state,
+          state: pod.state,
           builder: (context) => builder(context, pod),
           onActionBuilder: onActionBuilder == null ? null : (context) => onActionBuilder!(context, pod),
           onLoadingBuilder: onLoadingBuilder == null ? null : (context) => onLoadingBuilder!(context, pod),
@@ -106,10 +96,7 @@ class StickyKonsumer<VM extends StickyKonsumerViewModel<S>, S extends KonsumerSt
         );
       },
       onReady: onReady,
-      listen: (context, notifier, state, ref) => listen?.call(
-        context,
-        KonsumerPod(notifier, state, ref),
-      ),
+      listen: listen,
     );
   }
 }
