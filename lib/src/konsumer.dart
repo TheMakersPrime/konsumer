@@ -2,12 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:konsumer/src/base/konsumer_state.dart';
-import 'package:konsumer/src/base/konsumer_view_model.dart';
+import 'package:foundation/foundation.dart';
 import 'package:konsumer_core/konsumer_core.dart';
 import 'package:statetris/statetris.dart';
 
-class Konsumer<VM extends KonsumerViewModel<S>, S extends KonsumerState> extends StatelessWidget {
+class Konsumer<VM extends ViewModelFoundation<S>, S extends StateFoundation> extends StatelessWidget {
   const Konsumer({
     super.key,
     required this.provider,
@@ -54,7 +53,7 @@ class Konsumer<VM extends KonsumerViewModel<S>, S extends KonsumerState> extends
   }
 }
 
-class StickyKonsumer<VM extends StickyKonsumerViewModel<S>, S extends KonsumerState> extends StatelessWidget {
+class StickyKonsumer<VM extends StickyViewModelFoundation<S>, S extends StateFoundation> extends StatelessWidget {
   const StickyKonsumer({
     super.key,
     required this.provider,
@@ -101,7 +100,7 @@ class StickyKonsumer<VM extends StickyKonsumerViewModel<S>, S extends KonsumerSt
   }
 }
 
-class _Konsumer<S extends KonsumerState> extends StatelessWidget {
+class _Konsumer<S extends StateFoundation> extends StatelessWidget {
   const _Konsumer({
     required this.state,
     required this.builder,
