@@ -1,0 +1,30 @@
+name: counter
+description: "A sample project for Konsumer"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  equatable: ^2.0.7
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  foundation:
+    git:
+      url: https://github.com/Order-of-Runes/foundation.git
+      ref: main
+  konsumer:
+    git:
+      url: https://github.com/TheMakersPrime/konsumer.git
+      ref: main
+  konsumer_core:
+    git:
+      url: https://github.com/TheMakersPrime/konsumer_core.git
+      ref: main
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^7.0.0
