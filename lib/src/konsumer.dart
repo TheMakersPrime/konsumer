@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:konsumer_core/konsumer_core.dart';
 import 'package:statetris/statetris.dart';
 
-class Konsumer<VM extends ViewModelFoundation<S>, S extends StateFoundation> extends StatelessWidget {
+class Konsumer<VM extends AutoDisposeNotifier<S>, S extends StateFoundation> extends StatelessWidget {
   const Konsumer({
     super.key,
     required this.provider,
@@ -53,7 +53,7 @@ class Konsumer<VM extends ViewModelFoundation<S>, S extends StateFoundation> ext
   }
 }
 
-class StickyKonsumer<VM extends StickyViewModelFoundation<S>, S extends StateFoundation> extends StatelessWidget {
+class StickyKonsumer<VM extends Notifier<S>, S extends StateFoundation> extends StatelessWidget {
   const StickyKonsumer({
     super.key,
     required this.provider,
@@ -137,8 +137,8 @@ class _Konsumer<S extends StateFoundation> extends StatelessWidget {
       onErrorStateBuilder: onErrorBuilder == null
           ? (_) => StatePod.error(
               asset: errorAssetBuilder?.call(context),
-              title: (state.failure?.message == null) ? null : Text(state.failure?.message ?? ''),
-              subtitle: (state.failure?.detail == null) ? null : Text(state.failure?.detail ?? ''),
+              title: (state.failureMessage == null) ? null : Text(state.failureMessage ?? ''),
+              subtitle: (state.failureDetail == null) ? null : Text(state.failureDetail ?? ''),
               action: onActionBuilder?.call(context),
             )
           : null,
@@ -146,7 +146,7 @@ class _Konsumer<S extends StateFoundation> extends StatelessWidget {
   }
 
   StatetrisMode _computeMode(S state) {
-    if (state.loading == Loading.inline) return StatetrisMode.loading;
+    if (state.isLoading) return StatetrisMode.loading;
 
     if (state.hasFailed) return StatetrisMode.error;
 
