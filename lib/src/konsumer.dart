@@ -18,6 +18,8 @@ class Konsumer<VM extends AutoDisposeNotifier<S>, S extends StateFoundation> ext
     this.onErrorBuilder,
     this.loadingAssetBuilder,
     this.errorAssetBuilder,
+    this.onIsLoading,
+    this.onHasFailed,
   });
 
   final AutoDisposeNotifierProvider<VM, S> provider;
@@ -32,6 +34,9 @@ class Konsumer<VM extends AutoDisposeNotifier<S>, S extends StateFoundation> ext
   final KonsumerListen<VM, S>? listen;
   final KonsumerOnReady<VM>? onReady;
 
+  final bool Function(S)? onIsLoading;
+  final bool Function(S)? onHasFailed;
+
   @override
   Widget build(BuildContext context) {
     return KonsumerCore(
@@ -45,6 +50,8 @@ class Konsumer<VM extends AutoDisposeNotifier<S>, S extends StateFoundation> ext
           onErrorBuilder: onErrorBuilder == null ? null : (context) => onErrorBuilder!(context, pod),
           loadingAssetBuilder: loadingAssetBuilder == null ? null : (context) => loadingAssetBuilder!(context, pod),
           errorAssetBuilder: errorAssetBuilder == null ? null : (context) => errorAssetBuilder!(context, pod),
+          onIsLoading: onIsLoading,
+          onHasFailed: onHasFailed,
         );
       },
       onReady: onReady,
@@ -65,6 +72,8 @@ class StickyKonsumer<VM extends Notifier<S>, S extends StateFoundation> extends 
     this.onErrorBuilder,
     this.loadingAssetBuilder,
     this.errorAssetBuilder,
+    this.onIsLoading,
+    this.onHasFailed,
   });
 
   final NotifierProvider<VM, S> provider;
@@ -79,6 +88,9 @@ class StickyKonsumer<VM extends Notifier<S>, S extends StateFoundation> extends 
   final KonsumerListen<VM, S>? listen;
   final KonsumerOnReady<VM>? onReady;
 
+  final bool Function(S)? onIsLoading;
+  final bool Function(S)? onHasFailed;
+
   @override
   Widget build(BuildContext context) {
     return StickyKonsumerCore(
@@ -92,6 +104,8 @@ class StickyKonsumer<VM extends Notifier<S>, S extends StateFoundation> extends 
           onErrorBuilder: onErrorBuilder == null ? null : (context) => onErrorBuilder!(context, pod),
           loadingAssetBuilder: loadingAssetBuilder == null ? null : (context) => loadingAssetBuilder!(context, pod),
           errorAssetBuilder: errorAssetBuilder == null ? null : (context) => errorAssetBuilder!(context, pod),
+          onIsLoading: onIsLoading,
+          onHasFailed: onHasFailed,
         );
       },
       onReady: onReady,
@@ -109,6 +123,8 @@ class _Konsumer<S extends StateFoundation> extends StatelessWidget {
     required this.onErrorBuilder,
     required this.loadingAssetBuilder,
     required this.errorAssetBuilder,
+    required this.onIsLoading,
+    required this.onHasFailed,
   });
 
   final S state;
@@ -119,6 +135,8 @@ class _Konsumer<S extends StateFoundation> extends StatelessWidget {
   final WidgetBuilder? onErrorBuilder;
   final WidgetBuilder? loadingAssetBuilder;
   final WidgetBuilder? errorAssetBuilder;
+  final bool Function(S)? onIsLoading;
+  final bool Function(S)? onHasFailed;
 
   @override
   Widget build(BuildContext context) {
@@ -146,9 +164,9 @@ class _Konsumer<S extends StateFoundation> extends StatelessWidget {
   }
 
   StatetrisMode _computeMode(S state) {
-    if (state.isLoading) return StatetrisMode.loading;
+    if (onIsLoading?.call(state) ?? state.isLoading) return StatetrisMode.loading;
 
-    if (state.hasFailed) return StatetrisMode.error;
+    if (onHasFailed?.call(state) ?? state.hasFailed) return StatetrisMode.error;
 
     return StatetrisMode.loaded;
   }
